@@ -60,7 +60,20 @@ run_test_containers(){
         #Reload bluechi-testers in qm
         info_message "run_test_containers(): bluechi-tester-${i} reload & restart"
         exec_cmd "podman exec qm systemctl daemon-reload"
-        exec_cmd "podman exec qm systemctl restart bluechi-tester-${i}"
+        #exec_cmd "podman exec qm systemctl restart bluechi-tester-${i}"
+        podman exec qm systemctl restart bluechi-tester-${i}
+
+        # to debug issue
+        cat /etc/bluechi/controller.conf
+        systemctl status bluechi-controller
+        bluechictl status
+
+        systemctl enable bluechi-controller
+        systemctl enable bluechi-agent
+        systemctl start bluechi-controller
+        systemctl start bluechi-agent
+        bluechictl status
+        systemctl status bluechi-tester-1
     done
 }
 
