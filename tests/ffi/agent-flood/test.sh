@@ -75,6 +75,7 @@ run_test_containers(){
         podman exec qm systemctl daemon-reload
         podman exec qm systemctl restart bluechi-tester-${i}
         podman exec qm systemctl status bluechi-tester-${i}
+        podman exec qm journalctl -xeu bluechi-tester-${i}.service
     done
 }
 

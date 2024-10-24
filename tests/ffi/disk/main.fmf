@@ -2,7 +2,7 @@ summary: Test is calling systemd as stand alone test
 test: /bin/bash ./test.sh
 duration: 10m
 adjust:
-  - duration+: '*12'
+  - duration+: '*10'
     when: hw_target == rcar_s4
     because: To adapat to hw performance
 tag: ffi

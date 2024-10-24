@@ -1,10 +1,6 @@
 summary: Test bluechi against stress agent
 test: /bin/bash ./test.sh
 duration: 20m
-adjust:
-  - duration+: '*4'
-    when: hw_target == rcar_s4
-    because: To adapat to hw performance
 tag: ffi
 order: 70
 framework: shell
