@@ -61,22 +61,32 @@ run_test_containers(){
         info_message "run_test_containers(): bluechi-tester-${i} reload & restart"
         exec_cmd "podman exec qm systemctl daemon-reload"
         #exec_cmd "podman exec qm systemctl restart bluechi-tester-${i}"
+
+        sleep "${WAIT_BLUECHI_AGENT_CONNECT}"
         podman exec qm systemctl restart bluechi-tester-${i}
+        echo "================status bluechi-tester-${i}===================="
+        podman exec qm systemctl status bluechi-tester-${i}
+        echo "================status bluechi-controller================="
+        systemctl status bluechi-controller
 
         # Add debug info
         cat /etc/qm/containers/systemd/bluechi-tester-${i}.container
         cat /etc/bluechi/controller.conf
-        systemctl status bluechi-controller
 
-        podman exec qm systemctl enable bluechi-controller
-        podman exec qm systemctl enable bluechi-agent
-        podman exec qm systemctl start bluechi-controller
-        podman exec qm systemctl start bluechi-agent
-        podman exec qm systemctl daemon-reload
+        # podman exec qm systemctl enable bluechi-controller
+        # podman exec qm systemctl start bluechi-controller
+        #podman exec qm systemctl enable bluechi-agent
+        #podman exec qm systemctl start bluechi-agent
+        #podman exec qm systemctl daemon-reload
         podman exec qm systemctl restart bluechi-tester-${i}
+        echo "================status bluechi-tester-${i}==================="
         podman exec qm systemctl status bluechi-tester-${i}
+        echo "================journal of bluechi-tester-${i}.service==============="
         podman exec qm journalctl -xeu bluechi-tester-${i}.service
+        echo "================journal of bluechi-controller.service================"
         podman exec qm journalctl -xeu bluechi-controller.service
+        echo "================status bluechi-controller================="
+        systemctl status bluechi-controller
     done
 }
 
