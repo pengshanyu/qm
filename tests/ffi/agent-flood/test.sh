@@ -62,7 +62,7 @@ run_test_containers(){
         exec_cmd "podman exec qm systemctl daemon-reload"
         #exec_cmd "podman exec qm systemctl restart bluechi-tester-${i}"
 
-        sleep "${WAIT_BLUECHI_AGENT_CONNECT}"
+        sleep 60
         podman exec qm systemctl restart bluechi-tester-${i}
         echo "================status bluechi-tester-${i}===================="
         podman exec qm systemctl status bluechi-tester-${i}
