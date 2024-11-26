@@ -62,6 +62,11 @@ run_test_containers(){
         exec_cmd "podman exec qm systemctl daemon-reload"
         #exec_cmd "podman exec qm systemctl restart bluechi-tester-${i}"
 
+        echo "================qm version===================="
+        rpm -qa | grep qm
+        echo "================bluechi version===================="
+        rpm -qa | grep bluechi
+
         sleep 60
         podman exec qm systemctl restart bluechi-tester-${i}
         echo "================status bluechi-tester-${i}===================="
