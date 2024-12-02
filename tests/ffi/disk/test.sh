@@ -47,6 +47,12 @@ fi
 
 ls -lh /root/file.lock
 
+echo "=======add debug info begin============"
+lsblk
+echo "====================================="
+df -kh
+echo "=======add debug info end============"
+
 # Calling cleanup QM directorly to workaround exit code once
 # /var/qm disk is full.
 podman exec -it qm /bin/bash -c 'podman  rmi -i -f --all; echo $?'
