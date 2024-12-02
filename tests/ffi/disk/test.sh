@@ -21,6 +21,12 @@ EOF
 reload_config
 prepare_images
 
+echo "=======add debug info begin============"
+lsblk
+echo "====================================="
+df -kh
+echo "=======add debug info end============"
+
 exec_cmd "podman exec -it qm /bin/bash -c \
          'podman run -d --replace --name ffi-qm \
           quay.io/centos-sig-automotive/ffi-tools:latest \
