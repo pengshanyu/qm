@@ -9,6 +9,7 @@ prepare:
     order: 20
     package:
       - podman
+      - bc
 
 adjust:
  - when: run == manual

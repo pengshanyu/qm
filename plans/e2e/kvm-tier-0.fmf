@@ -1,0 +1,18 @@
+summary: Kvm Tier 0 - QM sanity test
+
+discover:
+    how: fmf
+    filter: 'tier:0&tag:kvm'
+
+prepare+:
+    - name: Enable copr and install rpms
+      script: |
+          cd tests/e2e
+          bash ./lib/repoutils
+
+execute:
+    how: tmt
+
+report:
+    how: junit
+
