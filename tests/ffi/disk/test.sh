@@ -21,12 +21,6 @@ EOF
 reload_config
 prepare_images
 
-echo "=======add debug info begin============"
-lsblk
-echo "====================================="
-df -kh
-echo "=======add debug info end============"
-
 exec_cmd "podman exec -it qm /bin/bash -c \
          'podman run -d --replace --name ffi-qm \
           quay.io/centos-sig-automotive/ffi-tools:latest \
@@ -35,23 +29,12 @@ exec_cmd "podman exec -it qm /bin/bash -c \
 exec_cmd "podman exec -it qm /bin/bash -c \
          'podman exec -it ffi-qm ./QM/file-allocate'"
 
-echo "=======add debug info begin============"
-lsblk
-echo "====================================="
-df -kh
-echo "=======add debug info end============"
 if ! eval "fallocate -l 2G /root/file.lock" ; then
    echo "No space left on device"
    exit 1
 fi
 
 ls -lh /root/file.lock
-
-echo "=======add debug info begin============"
-lsblk
-echo "====================================="
-df -kh
-echo "=======add debug info end============"
 
 # Calling cleanup QM directorly to workaround exit code once
 # /var/qm disk is full.
