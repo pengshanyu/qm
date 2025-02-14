@@ -86,10 +86,25 @@ prepare_images() {
       rm -rf ${QM_HOST_REGISTRY_DIR}
    fi
 
+   #------------debug info------------
+   df -kh
+   podman exec -it qm podman info | grep imageCopyTmpDir
+   podman exec -it qm df -kh /var/tmp
+   #------------debug info------------
    exec_cmd "mkdir -p ${QM_HOST_REGISTRY_DIR}"
    exec_cmd "podman push ${image_id} dir:${QM_HOST_REGISTRY_DIR}/tools-ffi:latest"
+   #------------debug info------------
+   df -kh
+   podman exec -it qm podman info | grep imageCopyTmpDir
+   podman exec -it qm df -kh /var/tmp
+   #------------debug info------------
    # Remove image to save /var space
    exec_cmd "podman rmi -f ${image_id}"
+   #------------debug info------------
+   df -kh
+   podman exec -it qm podman info | grep imageCopyTmpDir
+   podman exec -it qm df -kh /var/tmp
+   #------------debug info------------
 }
 
 run_container_in_qm() {
