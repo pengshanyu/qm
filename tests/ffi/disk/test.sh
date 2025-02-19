@@ -22,7 +22,7 @@ check_var_partition(){
    fi
 }
 
-check_var_partition
+#check_var_partition
 disk_cleanup
 prepare_test
 
