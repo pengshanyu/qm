@@ -26,16 +26,16 @@ check_var_partition(){
 disk_cleanup
 prepare_test
 
-cat << EOF > "${DROP_IN_DIR}"/oom.conf
-[Service]
-OOMScoreAdjust=
-OOMScoreAdjust=1000
+# cat << EOF > "${DROP_IN_DIR}"/oom.conf
+# [Service]
+# OOMScoreAdjust=
+# OOMScoreAdjust=1000
 
-[Container]
-PodmanArgs=
-PodmanArgs=--pids-limit=-1 --security-opt seccomp=/usr/share/qm/seccomp-no-rt.json --security-opt label=nested --security-opt unmask=all --memory 5G
+# [Container]
+# PodmanArgs=
+# PodmanArgs=--pids-limit=-1 --security-opt seccomp=/usr/share/qm/seccomp-no-rt.json --security-opt label=nested --security-opt unmask=all --memory 5G
 
-EOF
+# EOF
 
 reload_config
 prepare_images
