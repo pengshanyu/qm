@@ -42,12 +42,12 @@ disk_cleanup() {
    # Clean large size files created by tests inside qm part
    remove_file=$(find /var/qm -size  +2G)
    exec_cmd "rm -rf $remove_file"
-   # # Clean drop-in files used for tests
-   # if test -d "${DROP_IN_DIR=}"; then
-   #    exec_cmd "rm -rf ${DROP_IN_DIR}"
-   # fi
-   # exec_cmd "systemctl daemon-reload"
-   # exec_cmd "systemctl restart qm"
+   # Clean drop-in files used for tests
+   if test -d "${DROP_IN_DIR=}"; then
+      exec_cmd "rm -rf ${DROP_IN_DIR}"
+   fi
+   exec_cmd "systemctl daemon-reload"
+   exec_cmd "systemctl restart qm"
    # Clean large size files created by tests inside host part
    remove_file=$(find /root -size  +1G)
    exec_cmd "rm -f $remove_file"
@@ -91,14 +91,8 @@ prepare_images() {
    #------------debug info------------
    exec_cmd "mkdir -p ${QM_HOST_REGISTRY_DIR}"
    exec_cmd "podman push ${image_id} dir:${QM_HOST_REGISTRY_DIR}/tools-ffi:latest"
-   #------------debug info------------
-   podman exec -it qm df -kh /var/tmp
-   #------------debug info------------
    # Remove image to save /var space
    exec_cmd "podman rmi -f ${image_id}"
-   #------------debug info------------
-   podman exec -it qm df -kh /var/tmp
-   #------------debug info------------
 }
 
 run_container_in_qm() {

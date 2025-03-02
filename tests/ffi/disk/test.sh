@@ -5,13 +5,20 @@
 . ../common/prepare.sh
 
 check_var_partition(){
-   if stat /run/ostree-booted > /dev/null 2>&1; then
-      qm_var_partition="part /var"
-   else
-      qm_var_partition="part /usr/lib/qm/rootfs/var"
-   fi
+   var_partition_name="part /var/qm"
 
-   if [[ "$(lsblk -o 'MAJ:MIN,TYPE,MOUNTPOINTS')" =~ ${qm_var_partition} ]]; then
+   if stat /run/ostree-booted > /dev/null 2>&1; then
+      var_partition_name="part /var"
+   else
+      local release_id
+      release_id=$(grep -oP '(?<=^ID=)\w+' <<< "$(tr -d '"' < /etc/os-release)")
+      if [[ "$release_id" == "centos" ]]; then
+         var_partition_name="part /usr/lib/qm/rootfs/var"
+      fi
+   fi
+   echo "$var_partition_name"
+
+   if [[ "$(lsblk -o 'MAJ:MIN,TYPE,MOUNTPOINTS')" =~ ${var_partition_name} ]]; then
       info_message "A separate /var partition was detected on the image."
    else
       lsblk
@@ -22,20 +29,20 @@ check_var_partition(){
    fi
 }
 
-#check_var_partition
+check_var_partition
 disk_cleanup
 prepare_test
 
-# cat << EOF > "${DROP_IN_DIR}"/oom.conf
-# [Service]
-# OOMScoreAdjust=
-# OOMScoreAdjust=1000
+cat << EOF > "${DROP_IN_DIR}"/oom.conf
+[Service]
+OOMScoreAdjust=
+OOMScoreAdjust=1000
 
-# [Container]
-# PodmanArgs=
-# PodmanArgs=--pids-limit=-1 --security-opt seccomp=/usr/share/qm/seccomp-no-rt.json --security-opt label=nested --security-opt unmask=all --memory 5G
+[Container]
+PodmanArgs=
+PodmanArgs=--pids-limit=-1 --security-opt seccomp=/usr/share/qm/seccomp-no-rt.json --security-opt label=nested --security-opt unmask=all --memory 5G
 
-# EOF
+EOF
 
 reload_config
 prepare_images
@@ -47,6 +54,10 @@ exec_cmd "podman exec -it qm /bin/bash -c \
 
 exec_cmd "podman exec -it qm /bin/bash -c \
          'podman exec -it ffi-qm ./QM/file-allocate'"
+
+#------------debug info------------
+podman exec -it qm df -kh /var/tmp
+#------------debug info------------
 
 if ! eval "fallocate -l 2G /root/file.lock" ; then
    info_message "FAIL: No space left on device."
