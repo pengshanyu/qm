@@ -24,13 +24,14 @@
     - [QM Sub-Package Video](#qm-sub-package-video)
 7. [Examples](#examples)
 8. [Development](#development)
-9. [Realtime](#realtime)
-10. [Talks and Videos](#talks-and-videos)
+9. [Network Settings](https://github.com/containers/qm/blob/main/docs/tutorials/NETWORK.md)
+10. [Realtime](#realtime)
+11. [Talks and Videos](#talks-and-videos)
     - [Paving the Way for Uninterrupted Car Operations - DevConf Boston 2024](https://www.youtube.com/watch?v=jTrLqpw7E6Q)
     - [Security - Sample Risk Analysis according to ISO26262](https://www.youtube.com/watch?v=jTrLqpw7E6Q&t=1268s)
     - [ASIL and QM - Simulation and Service Monitoring using bluechi and podman](https://www.youtube.com/watch?v=jTrLqpw7E6Q&t=1680s)
     - [Containers in a Car - DevConf.CZ 2023](https://www.youtube.com/watch?v=FPxka5uDA_4)
-11. [RPM Mirrors](#rpm-mirrors)
+12. [RPM Mirrors](#rpm-mirrors)
 
 ## QM is a containerized environment for running Functional Safety QM (Quality Management) software
 
@@ -146,7 +147,7 @@ img_tempdir_subpackage             - Creates a local RPM package, useful for dev
 windowmanager_subpackage             - Creates a local RPM package, useful for development
 douglas@fedora:~/qm-multiplespecs/qm$
 
-make input_subpackage
+make TARGETS=input subpackages
 ls rpmbuild/RPMS/noarch/
 qm-0.6.7-1.fc40.noarch.rpm  qm_mount_bind_input-0.6.7-1.fc40.noarch.rpm
 ```
@@ -178,7 +179,8 @@ The video sub-package exposes `/dev/video0` (or many video devices required) to 
 ### Building the video sub-package, installing, and restarting QM
 
 ```bash
-make video_subpackage
+make TARGETS=video subpackages
+
 sudo podman restart qm
 sudo dnf install ./rpmbuild/RPMS/noarch/qm_mount_bind_video-0.6.7-1.fc40.noarch.rpm
 ```
@@ -216,7 +218,7 @@ Run the following commands to install the `qm_mount_bind_sound` package and rest
 ```bash
 # Build and install the RPM for QM sound
 git clone https://github.com/containers/qm.git && cd qm
-make sound_subpackage
+make TARGETS=sound subpackages
 sudo dnf install -y rpmbuild/RPMS/noarch/qm_mount_bind_sound-0.6.7-1.fc40.noarch.rpm
 
 # Restart QM container (if already running)
@@ -330,7 +332,7 @@ How to test this env?
 
 ```bash
 git clone https://github.com/containers/qm.git && cd qm
-make ros2_rolling_subpackage
+make TARGETS=ros2_rolling subpackages
 sudo dnf install rpmbuild/RPMS/noarch/qm_ros2_rolling-0.6.7-1.fc40.noarch.rpm  -y
 sudo podman restart qm  # if you have qm already running
 
@@ -350,7 +352,7 @@ Step 1:  clone QM repo, install libvirt packages, prepare some files inside QM a
 
 ```bash
 git clone https://github.com/containers/qm.git && cd qm
-make kvm_subpackage
+make TARGETS=kvm subpackages
 sudo dnf install rpmbuild/RPMS/noarch/qm_mount_bind_kvm-0.6.7-1.fc40.noarch.rpm
 sudo podman restart qm  # if you have qm already running
 sudo dnf --installroot /usr/lib/qm/rootfs/ install virt-install libvirt-daemon libvirt-daemon-qemu libvirt-daemon-kvm -y
