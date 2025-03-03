@@ -5,17 +5,25 @@
 . ../common/prepare.sh
 
 check_var_partition(){
+   var_partition_name="part /var/qm"
+
    if stat /run/ostree-booted > /dev/null 2>&1; then
-      qm_var_partition="part /var"
+      var_partition_name="part /var"
    else
-      qm_var_partition="part /usr/lib/qm/rootfs/var"
+      local release_id
+      release_id=$(grep -oP '(?<=^ID=)\w+' <<< "$(tr -d '"' < /etc/os-release)")
+      if [[ "$release_id" == "centos" ]]; then
+         var_partition_name="part /usr/lib/qm/rootfs/var"
+      fi
    fi
 
-   if [[ "$(lsblk -o 'MAJ:MIN,TYPE,MOUNTPOINTS')" =~ ${qm_var_partition} ]]; then
+   # Prints all available block devices to make it easier to debug
+   lsblk
+   df -kh
+   # If there is no separate /var partition this test will terminate early
+   if [[ "$(lsblk -o 'MAJ:MIN,TYPE,MOUNTPOINTS')" =~ ${var_partition_name} ]]; then
       info_message "A separate /var partition was detected on the image."
    else
-      lsblk
-      df -kh
       info_message "FAIL: No separate /var partition was detected on the image."
       info_message "Test terminated, it requires a separate /var disk partition for QM to run this test."
       exit 1
