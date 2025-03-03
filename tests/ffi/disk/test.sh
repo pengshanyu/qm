@@ -22,6 +22,12 @@ check_var_partition
 disk_cleanup
 prepare_test
 
+seccomp_file_name="/usr/share/qm/seccomp.json"
+release_id=$(grep -oP '(?<=^ID=)\w+' <<< "$(tr -d '"' < /etc/os-release)")
+if [[ "$release_id" == "centos" ]]; then
+   seccomp_file_name="/usr/share/qm/seccomp-no-rt.json"
+fi
+
 cat << EOF > "${DROP_IN_DIR}"/oom.conf
 [Service]
 OOMScoreAdjust=
@@ -29,7 +35,7 @@ OOMScoreAdjust=1000
 
 [Container]
 PodmanArgs=
-PodmanArgs=--pids-limit=-1 --security-opt seccomp=/usr/share/qm/seccomp-no-rt.json --security-opt label=nested --security-opt unmask=all --memory 5G
+PodmanArgs=--pids-limit=-1 --security-opt seccomp=${seccomp_file_name} --security-opt label=nested --security-opt unmask=all --memory 5G
 
 EOF
 
