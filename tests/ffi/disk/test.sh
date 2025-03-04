@@ -1,7 +1,6 @@
 #!/bin/bash -evx
 
-# shellcheck disable=SC1091
-
+# shellcheck source=tests/ffi/common/prepare.sh
 . ../common/prepare.sh
 
 check_var_partition(){ 
