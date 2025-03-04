@@ -22,32 +22,31 @@ check_var_partition
 disk_cleanup
 prepare_test
 
-seccomp_file_name="/usr/share/qm/seccomp.json"
-release_id=$(grep -oP '(?<=^ID=)\w+' <<< "$(tr -d '"' < /etc/os-release)")
-if [[ "$release_id" == "centos" ]]; then
-   seccomp_file_name="/usr/share/qm/seccomp-no-rt.json"
-fi
+# seccomp_file_name="/usr/share/qm/seccomp.json"
+# release_id=$(grep -oP '(?<=^ID=)\w+' <<< "$(tr -d '"' < /etc/os-release)")
+# if [[ "$release_id" == "centos" ]]; then
+#    seccomp_file_name="/usr/share/qm/seccomp-no-rt.json"
+# fi
 
-cat << EOF > "${DROP_IN_DIR}"/oom.conf
-[Service]
-OOMScoreAdjust=
-OOMScoreAdjust=1000
+# cat << EOF > "${DROP_IN_DIR}"/oom.conf
+# [Service]
+# OOMScoreAdjust=
+# OOMScoreAdjust=1000
 
-[Container]
-PodmanArgs=
-PodmanArgs=--pids-limit=-1 --security-opt seccomp=${seccomp_file_name} --security-opt label=nested --security-opt unmask=all --memory 5G
+# [Container]
+# PodmanArgs=
+# PodmanArgs=--pids-limit=-1 --security-opt seccomp=${seccomp_file_name} --security-opt label=nested --security-opt unmask=all --memory 5G
 
-EOF
+# EOF
 
 reload_config
 prepare_images
 
-# exec_cmd "podman exec -it qm /bin/bash -c \
-#          'podman run -d --replace --name ffi-qm \
-#           quay.io/centos-sig-automotive/ffi-tools:latest \
-#           tail -f /dev/null'"
+exec_cmd "podman exec -it qm /bin/bash -c \
+         'podman run -d --replace --name ffi-qm \
+          quay.io/centos-sig-automotive/ffi-tools:latest \
+          tail -f /dev/null'"
 
-run_container_in_qm "ffi-qm"
 exec_cmd "podman exec -it qm /bin/bash -c \
          'podman exec -it ffi-qm ./QM/file-allocate'"
 
