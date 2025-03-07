@@ -57,9 +57,15 @@ PodmanArgs=${podmanArgs_of_qm}
 EOF
 
 reload_config
-prepare_images
+#prepare_images
 
-run_container_in_qm "ffi-qm"
+#run_container_in_qm "ffi-qm"
+
+exec_cmd "podman exec -it qm /bin/bash -c \
+         'podman run -d --replace --name ffi-qm \
+          quay.io/centos-sig-automotive/ffi-tools:latest \
+          tail -f /dev/null'"
+
 exec_cmd "podman exec -it qm /bin/bash -c \
          'podman exec -it ffi-qm ./QM/file-allocate'"
 
