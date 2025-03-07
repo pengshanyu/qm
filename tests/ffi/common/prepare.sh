@@ -44,10 +44,10 @@ disk_cleanup() {
    # Clean large size files created by tests inside qm part
    remove_file=$(find /var/qm -size  +2G)
    exec_cmd "rm -rf $remove_file"
-   # # Clean drop-in files used for tests
-   # if test -d "${DROP_IN_DIR=}"; then
-   #    exec_cmd "rm -rf ${DROP_IN_DIR}"
-   # fi
+   # Clean drop-in files used for tests
+   if test -d "${DROP_IN_DIR=}"; then
+      exec_cmd "rm -rf ${DROP_IN_DIR}"
+   fi
    exec_cmd "systemctl daemon-reload"
    exec_cmd "systemctl restart qm"
    # Clean large size files created by tests inside host part
