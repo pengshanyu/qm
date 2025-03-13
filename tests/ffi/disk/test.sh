@@ -56,7 +56,9 @@ PodmanArgs=${podmanArgs_of_qm}
 
 Mount=
 Mount=type=tmpfs,tmpfs-size=768M,destination=/tmp
+Mount=
 Mount=type=tmpfs,tmpfs-size=768M,destination=/run
+Mount=
 Mount=type=tmpfs,destination=/dev/shm
 
 EOF
