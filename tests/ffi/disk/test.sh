@@ -54,6 +54,9 @@ OOMScoreAdjust=1000
 PodmanArgs=
 PodmanArgs=${podmanArgs_of_qm}
 
+Mount=
+Mount=type=tmpfs,tmpfs-size=768M,destination=/tmp
+
 EOF
 
 reload_config
